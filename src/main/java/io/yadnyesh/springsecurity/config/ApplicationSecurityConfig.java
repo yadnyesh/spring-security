@@ -25,8 +25,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/","index.html","/css/*","/js/*")
-                .permitAll()
+                .antMatchers("/","index.html","/css/*","/js/*").permitAll()
+                .antMatchers("/api/**").hasRole(STUDENT.name())
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -39,7 +39,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
         UserDetails yadnyeshUser = User.builder()
                 .username("yadnyesh")
-                .password(passwordEncoder.encode("password"))
+                .password(passwordEncoder.encode("yadnyesh"))
                 .roles(STUDENT.name()) //ROLE_STUDENT
                 .build();
 
@@ -49,6 +49,18 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .roles(ADMIN.name())
                 .build();
 
-        return new InMemoryUserDetailsManager(yadnyeshUser,varadaUser);
+        UserDetails tomUser = User.builder()
+                .username("tom")
+                .password(passwordEncoder.encode("tom"))
+                .roles(ADMINTRAINEE.name())
+                .build();
+
+        UserDetails lindaUser = User.builder()
+                .username("linda")
+                .password(passwordEncoder.encode("linda"))
+                .roles(ADMIN.name())
+                .build();
+
+        return new InMemoryUserDetailsManager(yadnyeshUser, varadaUser, tomUser, lindaUser);
     }
 }
